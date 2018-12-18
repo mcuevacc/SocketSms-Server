@@ -1,7 +1,7 @@
 var net = require('net');
 var sockets = [];
-var HOST = '127.0.0.1';
-var PORT = 6969;
+var HOST = '0.0.0.0';
+var PORT = 8080;
 
 var server = net.createServer();
 server.listen(PORT, HOST);
