@@ -17,12 +17,17 @@ server.on('connection', function(socket) {
     socket.on('data', function(data) {
         console.log('DATA ' + socket.remoteAddress + ': ' + data);
 
-        obj = JSON.parse(data);
-	    if(typeof(obj.number)!=='undefined' && typeof(obj.text)!=='undefined'){
-	        sockets.forEach(function(socket, index, array){
-	            socket.write(data);
-	        });
-	    }
+        try {
+            obj = JSON.parse(data);
+    	    if(typeof(obj.number)!=='undefined' && typeof(obj.text)!=='undefined'){
+    	        sockets.forEach(function(socket, index, array){
+    	            socket.write(data);
+    	        });
+    	    }
+        } catch (error) {
+            console.error(error);
+        }
+
     });
 
     socket.on('end', function() {
