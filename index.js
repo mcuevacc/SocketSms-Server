@@ -20,21 +20,26 @@ server.on('connection', function(socket) {
             console.log('DATA '+socket.remoteAddress + ': ' + data);
             
             if(data=='Sender'){
+                console.log("Name: "+socket.name);
                 senders.push(socket);
                 return;
             }else{
                 if((data.toString()).substring(0,1)!='{')
                     return;
                 
-                if(senders.length!=0)
-                    socket.write('Send');                
-                else
+                if(senders.length!=0){
+                    console.log('Existen "'+senders.length+'" senders.');
+                    socket.write('Send');
+                }else{
+                    console.log('No hay senders.');
                     socket.write('Error');
+                }
             }  
                         
             obj = JSON.parse(data);
     	    if(typeof(obj.number)!=='undefined' && typeof(obj.text)!=='undefined'){
-    	        senders.forEach(function(socket, index, array){
+    	        senders.forEach(function(socket, nderindex, array){
+                    console.log('Enviando peticion a sender :'+socket.name);
     	            socket.write(data);
     	        });
     	    }
