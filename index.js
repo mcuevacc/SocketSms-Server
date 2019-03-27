@@ -23,11 +23,14 @@ server.on('connection', function(socket) {
                 senders.push(socket);
                 return;
             }else{
+                if(data.substring(0,1)!='{')
+                    return;
+
                 if(senders.length!=0)
                     socket.write('Send');                
                 else
                     socket.write('Error');
-            }
+            }  
                         
             obj = JSON.parse(data);
     	    if(typeof(obj.number)!=='undefined' && typeof(obj.text)!=='undefined'){
