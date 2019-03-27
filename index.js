@@ -2,7 +2,7 @@ var net = require('net');
 var sockets = [];
 var senders = [];
 var HOST = '0.0.0.0';
-var PORT = 8080;
+var PORT = 1337;
 
 var server = net.createServer();
 server.listen(PORT, HOST);
@@ -53,4 +53,10 @@ server.on('connection', function(socket) {
     socket.on('error', function(error) {
         console.log('Socket got problem: ', error.message);
     });
+    /*
+    socket.on('uncaughtException', function(err) {
+      console.error('UncaughtException: ',err.stack);
+      //server.exit();
+    });
+    */
 });
