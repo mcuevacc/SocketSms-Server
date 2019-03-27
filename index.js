@@ -23,9 +23,9 @@ server.on('connection', function(socket) {
                 senders.push(socket);
                 return;
             }else{
-                if(data.substring(0,1)!='{')
+                if((data.toString()).substring(0,1)!='{')
                     return;
-
+                
                 if(senders.length!=0)
                     socket.write('Send');                
                 else
