@@ -19,7 +19,8 @@ server.on('connection', function(socket) {
             
             if(data=='Sender'){                
                 console.log("Name: "+socket.name);
-                socket.setTimeout(0);
+                //socket.setTimeout(0);
+                socket.setKeepAlive(true,60000);
                 sockets.push(socket);
                 return;
             }else{
