@@ -9,8 +9,6 @@ console.log('Server listening on '+HOST+':'+PORT);
 
 server.on('connection', function(socket) {
 
-    socket.setTimeout(0);
-
     console.log('CONNECTED: '+socket.remoteAddress +':'+ socket.remotePort+"\n");
 
     socket.name = socket.remoteAddress+":"+socket.remotePort; 
@@ -19,8 +17,9 @@ server.on('connection', function(socket) {
         try {
             console.log('DATA '+socket.remoteAddress + ': ' + data);
             
-            if(data=='Sender'){
+            if(data=='Sender'){                
                 console.log("Name: "+socket.name);
+                socket.setTimeout(0);
                 sockets.push(socket);
                 return;
             }else{
