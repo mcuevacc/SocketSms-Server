@@ -1,6 +1,5 @@
 var net = require('net');
 var sockets = [];
-var senders = [];
 var HOST = '0.0.0.0';
 var PORT = 1337;
 
@@ -10,10 +9,11 @@ console.log('Server listening on '+HOST+':'+PORT);
 
 server.on('connection', function(socket) {
 
+    socket.setTimeout(0);
+
     console.log('CONNECTED: '+socket.remoteAddress +':'+ socket.remotePort+"\n");
 
     socket.name = socket.remoteAddress+":"+socket.remotePort; 
-    sockets.push(socket);
 
     socket.on('data', function(data) {
         try {
@@ -21,14 +21,14 @@ server.on('connection', function(socket) {
             
             if(data=='Sender'){
                 console.log("Name: "+socket.name);
-                senders.push(socket);
+                sockets.push(socket);
                 return;
             }else{
                 if((data.toString()).substring(0,1)!='{')
                     return;
                 
-                if(senders.length!=0){
-                    console.log('Existen "'+senders.length+'" senders.');
+                if(sockets.length!=0){
+                    console.log('Existen "'+sockets.length+'" senders.');
                     socket.write('Send');
                 }else{
                     console.log('No hay senders.');
@@ -38,7 +38,7 @@ server.on('connection', function(socket) {
                         
             obj = JSON.parse(data);
     	    if(typeof(obj.number)!=='undefined' && typeof(obj.text)!=='undefined'){
-    	        senders.forEach(function(socket, nderindex, array){
+    	        sockets.forEach(function(socket, nderindex, array){
                     console.log('Enviando peticion a sender :'+socket.name);
     	            socket.write(data);
     	        });
@@ -50,9 +50,8 @@ server.on('connection', function(socket) {
 
     socket.on('end', function() {
         console.log(socket.name+" left the broadcast.\n");
-        sockets.splice(sockets.indexOf(socket), 1);
-        if(senders.indexOf(socket)!=-1)
-            senders.splice(senders.indexOf(socket), 1);
+        if(sockets.indexOf(socket)!=-1)
+            sockets.splice(sockets.indexOf(socket), 1);
     });
 
     socket.on('error', function(error) {
