@@ -5,21 +5,22 @@ var PORT = 1337;
 
 var server = net.createServer();
 server.listen(PORT, HOST);
+
 console.log('Server listening on '+HOST+':'+PORT);
 
-server.on('connection', function(socket) {
+server.on('connection', (socket)=>{
 
-    console.log('CONNECTED: '+socket.remoteAddress +':'+ socket.remotePort+"\n");
+    console.log('CONNECTED: '+socket.remoteAddress+':'+socket.remotePort);
 
     socket.name = socket.remoteAddress+":"+socket.remotePort; 
 
-    socket.on('data', function(data) {
+    socket.on('data', (data)=>{
         try {
-            console.log('DATA '+socket.remoteAddress + ': ' + data);
+            console.log('DATA '+socket.remoteAddress+': '+data);
             
             if(data=='Sender'){                
                 console.log("Name: "+socket.name);
-                //socket.setTimeout(0);
+
                 socket.setKeepAlive(true,10000);
                 sockets.push(socket);
                 return;
@@ -28,39 +29,33 @@ server.on('connection', function(socket) {
                     return;
                 
                 if(sockets.length!=0){
-                    console.log('Existen "'+sockets.length+'" senders.');
+                    console.log('Existen "'+sockets.length+'" senders');
                     socket.write('Send');
                 }else{
-                    console.log('No hay senders.');
+                    console.log("No hay senders");
                     socket.write('Error');
                 }
-            }  
-                        
+            }
+
             obj = JSON.parse(data);
     	    if(typeof(obj.number)!=='undefined' && typeof(obj.text)!=='undefined'){
-    	        sockets.forEach(function(socket, nderindex, array){
+    	        sockets.forEach((socket, nderindex, array)=>{
                     console.log('Enviando peticion a sender :'+socket.name);
     	            socket.write(data);
     	        });
     	    }
-        } catch (error) {
+        }catch(error){
             console.error(error);
         }
     });
 
-    socket.on('end', function() {
-        console.log(socket.name+" left the broadcast.\n");
+    socket.on('end', ()=>{
+        console.log(socket.name+" left the broadcast");
         if(sockets.indexOf(socket)!=-1)
             sockets.splice(sockets.indexOf(socket), 1);
     });
 
-    socket.on('error', function(error) {
+    socket.on('error', (error)=>{
         console.log('Socket got problem: ', error.message);
     });
-    /*
-    socket.on('uncaughtException', function(err) {
-      console.error('UncaughtException: ',err.stack);
-      //server.exit();
-    });
-    */
 });
